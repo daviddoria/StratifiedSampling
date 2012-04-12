@@ -3,7 +3,7 @@
 #include <vtkXMLPolyDataWriter.h>
 
 #include "vtkStratifiedSampling.h"
-    
+
 int main(int argc, char *argv[])
 {
   vtkSmartPointer<vtkSphereSource> sphereSource = 
@@ -12,12 +12,12 @@ int main(int argc, char *argv[])
   
   vtkSmartPointer<vtkStratifiedSampling> stratifiedSampling = 
       vtkSmartPointer<vtkStratifiedSampling>::New();
-  stratifiedSampling->SetInputConnection(sphereSource->GetOutputPort());
+  stratifiedSampling->SetInputData(sphereSource->GetOutput());
   stratifiedSampling->Update();
   
   vtkSmartPointer<vtkXMLPolyDataWriter> writer = 
       vtkSmartPointer<vtkXMLPolyDataWriter>::New();
-  writer->SetInputConnection(stratifiedSampling->GetOutputPort());
+  writer->SetInputData(stratifiedSampling->GetOutput());
   writer->SetFileName("test.vtp");
   writer->Write();
   
