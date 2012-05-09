@@ -51,7 +51,7 @@ ADD_EXECUTABLE(StratifiedSampling  vtkStratifiedSampling.cxx main.cpp
 ${sources}
 )
 
-TARGET_LINK_LIBRARIES(StratifiedSampling vtkHybrid)
+TARGET_LINK_LIBRARIES(StratifiedSampling ${VTK_LIBRARIES})
 
 ##############
 ADD_EXECUTABLE(Test Test.cxx vtkStratifiedSampling.cxx 

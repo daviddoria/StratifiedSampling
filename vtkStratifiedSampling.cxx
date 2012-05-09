@@ -13,7 +13,6 @@
 #include "vtkCellArray.h"
 #include "vtkVertexGlyphFilter.h"
 
-vtkCxxRevisionMacro(vtkStratifiedSampling, "$Revision: 1.70 $");
 vtkStandardNewMacro(vtkStratifiedSampling);
 
 vtkStratifiedSampling::vtkStratifiedSampling()

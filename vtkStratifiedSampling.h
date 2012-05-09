@@ -6,7 +6,6 @@
 class vtkStratifiedSampling : public vtkPolyDataAlgorithm 
 {
 public:
-  vtkTypeRevisionMacro(vtkStratifiedSampling,vtkPolyDataAlgorithm);
   void PrintSelf(ostream& os, vtkIndent indent);
 
   static vtkStratifiedSampling *New();
@@ -33,7 +32,6 @@ private:
   double Lambda;
   double Bad;
 
-  
 };
 
 #endif
