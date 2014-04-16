@@ -12,6 +12,8 @@
 #include "vtkTriangle.h"
 #include "vtkCellArray.h"
 #include "vtkVertexGlyphFilter.h"
+#include "vtkDoubleArray.h"
+#include "vtkPointData.h"
 
 vtkStandardNewMacro(vtkStratifiedSampling);
 
@@ -60,15 +62,26 @@ int vtkStratifiedSampling::RequestData(vtkInformation *vtkNotUsed(request),
   vtkSmartPointer<vtkPoints> points = 
       vtkSmartPointer<vtkPoints>::New();
 
+  vtkSmartPointer<vtkDoubleArray> pointNormalsArray =
+    vtkSmartPointer<vtkDoubleArray>::New();
+  pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
+  pointNormalsArray->SetNumberOfTuples(cloud.vertex.size());
+
   for(unsigned int i = 0; i < cloud.vertex.size(); i++)
     {
     points->InsertNextPoint(cloud.vertex[i][0], cloud.vertex[i][1], cloud.vertex[i][2]);
+
+    double pN[3] = {cloud.normal[i][0], cloud.normal[i][1], cloud.normal[i][2]};
+    pointNormalsArray->SetTuple(i, pN);
     }
 
   vtkSmartPointer<vtkPolyData> outputPoints = 
       vtkSmartPointer<vtkPolyData>::New();
 
   outputPoints->SetPoints(points);
+
+  // Add the normals to the points in the polydata
+  outputPoints->GetPointData()->SetNormals(pointNormalsArray);
 
   vtkSmartPointer<vtkVertexGlyphFilter> glyphFilter = 
     vtkSmartPointer<vtkVertexGlyphFilter>::New();
