@@ -72,7 +72,11 @@ int vtkStratifiedSampling::RequestData(vtkInformation *vtkNotUsed(request),
 
   vtkSmartPointer<vtkVertexGlyphFilter> glyphFilter = 
     vtkSmartPointer<vtkVertexGlyphFilter>::New();
+#if VTK_MAJOR_VERSION <= 5
+  glyphFilter->SetInput(outputPoints);
+#else
   glyphFilter->SetInputData(outputPoints);
+#endif
   glyphFilter->Update();
 
   output->ShallowCopy(glyphFilter->GetOutput());
