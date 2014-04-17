@@ -1,57 +1,66 @@
-#include <vtkSmartPointer.h>
-#include <vtkSphereSource.h>
-#include <vtkXMLPolyDataWriter.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
+#include <vtkArrowSource.h>
+#include <vtkGlyph3D.h>
+#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkLinearSubdivisionFilter.h>
+#include <vtkLineSource.h>
+#include <vtkPointData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkInteractorStyleTrackballCamera.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
+#include <vtkTriangleFilter.h>
+#include <vtkXMLPolyDataWriter.h>
 
 #include "vtkStratifiedSampling.h"
-#include "vtkArrowSource.h"
-#include "vtkLineSource.h"
-#include "vtkGlyph3D.h"
-#include "vtkPointData.h"
-#include "vtkTriangleFilter.h"
-#include "vtkLinearSubdivisionFilter.h"
-#include "vtkProperty.h"
-#include "vtkPolyDataNormals.h"
 
-int main(int argc, char *argv[])
+// This function generates 'object'
+static void GenerateObject(vtkPolyData* const object)
 {
-  // start with an arrow shape
-  vtkSmartPointer<vtkArrowSource> arrowSource =
-    vtkSmartPointer<vtkArrowSource>::New();
-  arrowSource->Update();
+    // start with an arrow shape
+    vtkSmartPointer<vtkArrowSource> arrowSource =
+      vtkSmartPointer<vtkArrowSource>::New();
+    arrowSource->Update();
 
-  // triangulize before normal splitting and as
-  // sampling needs triangulized points anyway
-  vtkSmartPointer<vtkTriangleFilter> triFilter =
-    vtkSmartPointer<vtkTriangleFilter>::New();
-#if VTK_MAJOR_VERSION <= 5
-  triFilter->SetInput(arrowSource->GetOutput());
-#else
-  triFilter->SetInputData(arrowSource->GetOutput());
-#endif
-  triFilter->Update();
+    // triangulize before normal splitting and as
+    // sampling needs triangulized points anyway
+    vtkSmartPointer<vtkTriangleFilter> triFilter =
+      vtkSmartPointer<vtkTriangleFilter>::New();
+  #if VTK_MAJOR_VERSION <= 5
+    triFilter->SetInput(arrowSource->GetOutput());
+  #else
+    triFilter->SetInputData(arrowSource->GetOutput());
+  #endif
+    triFilter->Update();
 
-  // if you don't want the sampling to interpolate
-  // between normals of sharp edges, you have
-  // have to split them like this
-  vtkSmartPointer<vtkPolyDataNormals> normalFilter =
-    vtkSmartPointer<vtkPolyDataNormals>::New();
-  normalFilter->SplittingOn();
-  normalFilter->SetFeatureAngle(1.0 / 180.0 * 3.1415);
-  normalFilter->ComputePointNormalsOn();
-#if VTK_MAJOR_VERSION <= 5
-  normalFilter->SetInput(triFilter->GetOutput());
-#else
-  normalFilter->SetInputData(triFilter->GetOutput());
-#endif
-  normalFilter->Update();
+    // if you don't want the sampling to interpolate
+    // between normals of sharp edges, you have
+    // have to split them like this
+    vtkSmartPointer<vtkPolyDataNormals> normalFilter =
+      vtkSmartPointer<vtkPolyDataNormals>::New();
+    normalFilter->SplittingOn();
+    normalFilter->SetFeatureAngle(1.0 / 180.0 * 3.1415);
+    normalFilter->ComputePointNormalsOn();
+  #if VTK_MAJOR_VERSION <= 5
+    normalFilter->SetInput(triFilter->GetOutput());
+  #else
+    normalFilter->SetInputData(triFilter->GetOutput());
+  #endif
+    normalFilter->Update();
 
-  // now sample
+    object->DeepCopy(normalFilter->GetOutput());
+}
+
+int main(int , char *[])
+{
+  vtkSmartPointer<vtkPolyData> object = vtkSmartPointer<vtkPolyData>::New();
+  GenerateObject(object);
+
+  // sample the object
   vtkSmartPointer<vtkStratifiedSampling> stratifiedSampling = 
     vtkSmartPointer<vtkStratifiedSampling>::New();
   stratifiedSampling->SetLevel(8);
@@ -59,9 +68,9 @@ int main(int argc, char *argv[])
   stratifiedSampling->SetBad(0.5);
 
 #if VTK_MAJOR_VERSION <= 5
-  stratifiedSampling->SetInput(normalFilter->GetOutput());
+  stratifiedSampling->SetInput(object);
 #else
-  stratifiedSampling->SetInputData(normalFilter->GetOutput());
+  stratifiedSampling->SetInputData(object);
 #endif
   stratifiedSampling->Update();
   
@@ -94,12 +103,17 @@ int main(int argc, char *argv[])
 
   double p[3];
   line->GetPoint1(p);
-  std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+  //std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
   line->GetPoint2(p);
-  std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
+  //std::cout << p[0] << ", " << p[1] << ", " << p[2] << std::endl;
 
   vtkSmartPointer<vtkGlyph3D> glyph = vtkSmartPointer<vtkGlyph3D>::New();
+#if VTK_MAJOR_VERSION <= 5
   glyph->SetInput( stratifiedSampling->GetOutput());
+#else
+  glyph->SetInputData( stratifiedSampling->GetOutput());
+#endif
+
   glyph->SetSourceConnection(line->GetOutputPort());
   glyph->OrientOn();
   glyph->SetVectorModeToUseNormal();
@@ -116,17 +130,19 @@ int main(int argc, char *argv[])
   vtkSmartPointer<vtkPolyDataMapper> mapperMesh =
     vtkSmartPointer<vtkPolyDataMapper>::New();
 #if VTK_MAJOR_VERSION <= 5
-  mapperMesh->SetInput(normalFilter->GetOutput());
+  mapperMesh->SetInput(object);
 #else
-  mapperMesh->SetInputData(normalFilter->GetOutput());
+  mapperMesh->SetInputData(object);
 #endif
 
   vtkSmartPointer<vtkActor> actorMesh =
     vtkSmartPointer<vtkActor>::New();
   actorMesh->SetMapper(mapperMesh);
   actorMesh->GetProperty()->SetRepresentationToWireframe();
-  actorMesh->SetPosition(0.0, 1.0, 0.0);
 
+  // Move the original mesh so you can see both the original mesh and the
+  // stratified sampled points with normals simultaneously
+  actorMesh->SetPosition(0.0, 1.0, 0.0);
 
   // Create a renderer, render window, and interactor
   vtkSmartPointer<vtkRenderer> renderer =
