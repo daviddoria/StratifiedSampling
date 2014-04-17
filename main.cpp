@@ -14,6 +14,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
 #include <vtkTriangleFilter.h>
+#include <vtkVersion.h>
 #include <vtkXMLPolyDataWriter.h>
 
 #include "vtkStratifiedSampling.h"

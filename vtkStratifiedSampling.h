@@ -6,9 +6,12 @@
 class vtkStratifiedSampling : public vtkPolyDataAlgorithm 
 {
 public:
-  void PrintSelf(ostream& os, vtkIndent indent);
-
+  // Prevent "error: invalid conversion from 'vtkPolyDataAlgorithm*'
+  // to 'vtkStratifiedSampling*'" when building Paraview Plugin
   static vtkStratifiedSampling *New();
+  vtkTypeMacro(vtkStratifiedSampling, vtkPolyDataAlgorithm);
+
+  void PrintSelf(ostream& os, vtkIndent indent);
 	  
   vtkSetMacro(Level, int);
   vtkGetMacro(Level, int);
