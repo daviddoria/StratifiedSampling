@@ -12,7 +12,7 @@
 #include "vtkTriangle.h"
 #include "vtkCellArray.h"
 #include "vtkVertexGlyphFilter.h"
-#include "vtkDoubleArray.h"
+#include "vtkFloatArray.h"
 #include "vtkPointData.h"
 
 vtkStandardNewMacro(vtkStratifiedSampling);
@@ -62,8 +62,8 @@ int vtkStratifiedSampling::RequestData(vtkInformation *vtkNotUsed(request),
   vtkSmartPointer<vtkPoints> points = 
       vtkSmartPointer<vtkPoints>::New();
 
-  vtkSmartPointer<vtkDoubleArray> pointNormalsArray =
-    vtkSmartPointer<vtkDoubleArray>::New();
+  vtkSmartPointer<vtkFloatArray> pointNormalsArray =
+    vtkSmartPointer<vtkFloatArray>::New();
   pointNormalsArray->SetNumberOfComponents(3); //3d normals (ie x,y,z)
   pointNormalsArray->SetNumberOfTuples(cloud.vertex.size());
 
@@ -71,7 +71,7 @@ int vtkStratifiedSampling::RequestData(vtkInformation *vtkNotUsed(request),
     {
     points->InsertNextPoint(cloud.vertex[i][0], cloud.vertex[i][1], cloud.vertex[i][2]);
 
-    double pN[3] = {cloud.normal[i][0], cloud.normal[i][1], cloud.normal[i][2]};
+    float pN[3] = {cloud.normal[i][0], cloud.normal[i][1], cloud.normal[i][2]};
     pointNormalsArray->SetTuple(i, pN);
     }
 
