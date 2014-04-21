@@ -65,4 +65,5 @@ TARGET_LINK_LIBRARIES(StratifiedSampling StratifiedLibrary ${VTK_LIBRARIES})
 ADD_EXECUTABLE(Test Test.cxx vtkStratifiedSampling.cxx)
 TARGET_LINK_LIBRARIES(Test StratifiedLibrary ${VTK_LIBRARIES})
 
-ADD_TEST(StratifiedSamplingTest Test)
+add_test(NAME StratifiedSamplingTest COMMAND ${CMAKE_BINARY_DIR}/Test
+         ${CMAKE_SOURCE_DIR}/TestingData/sampled.vtp)
