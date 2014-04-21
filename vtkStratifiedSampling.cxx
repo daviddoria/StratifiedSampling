@@ -23,12 +23,17 @@ vtkStratifiedSampling::vtkStratifiedSampling()
   this->Level = 6;
   this->Lambda = 10.0;
   this->Bad = 0.5;
+  this->RandomSeed = time(NULL);
 }
 
 int vtkStratifiedSampling::RequestData(vtkInformation *vtkNotUsed(request),
                                              vtkInformationVector **inputVector,
                                              vtkInformationVector *outputVector)
 {
+  // Control the randomness
+  srand(this->RandomSeed);
+  srand48(this->RandomSeed);
+
   // get the info objects
   vtkInformation *inInfo = inputVector[0]->GetInformationObject(0);
   vtkInformation *outInfo = outputVector->GetInformationObject(0);

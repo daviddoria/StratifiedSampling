@@ -21,6 +21,9 @@ public:
   
   vtkSetMacro(Bad, double);
   vtkGetMacro(Bad, double);
+
+  vtkSetMacro(RandomSeed, unsigned int);
+  vtkGetMacro(RandomSeed, unsigned int);
   
 protected:
   vtkStratifiedSampling();
@@ -34,7 +37,7 @@ private:
   int Level;
   double Lambda;
   double Bad;
-
+  unsigned int RandomSeed;
 };
 
 #endif

@@ -453,7 +453,6 @@ void erode(TriMesh *mesh)
 	remove_vertices(mesh, bdy);
 }
 
-
 // Add a bit of noise to the mesh
 void noisify(TriMesh *mesh, float amount)
 {

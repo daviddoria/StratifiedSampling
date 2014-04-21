@@ -23,27 +23,34 @@
         </Documentation>
       </InputProperty>
 
-        <IntVectorProperty
-            name="Level"
-            command="SetLevel"
-            number_of_elements="1"
-            default_values="6">
-         </IntVectorProperty>
+      <IntVectorProperty
+         name="Level"
+         command="SetLevel"
+         number_of_elements="1"
+         default_values="6">
+      </IntVectorProperty>
          
-         <DoubleVectorProperty
-            name="Lambda"
-            command="SetLambda"
-            number_of_elements="1"
-            default_values="10.0">
-         </DoubleVectorProperty>
+      <DoubleVectorProperty
+         name="Lambda"
+         command="SetLambda"
+         number_of_elements="1"
+         default_values="10.0">
+      </DoubleVectorProperty>
          
-                  <DoubleVectorProperty
-            name="Bad"
-            command="SetBad"
-            number_of_elements="1"
-            default_values="0.5">
-         </DoubleVectorProperty>
+      <DoubleVectorProperty
+         name="Bad"
+         command="SetBad"
+         number_of_elements="1"
+         default_values="0.5">
+      </DoubleVectorProperty>
 
+      <IntVectorProperty
+         name="RandomSeed"
+         command="SetRandomSeed"
+         number_of_elements="1"
+         default_values="0">
+      </IntVectorProperty>
+      
     </SourceProxy>
     <!-- End StratifiedSampling-->
   </ProxyGroup>

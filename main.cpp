@@ -74,7 +74,6 @@ int main(int , char *[])
   stratifiedSampling->SetInputData(object);
 #endif
   stratifiedSampling->Update();
-  
 
   // Create a mapper and actor for the points
   vtkSmartPointer<vtkPolyDataMapper> mapper =
