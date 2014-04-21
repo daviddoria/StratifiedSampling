@@ -12,17 +12,8 @@ Miscellaneous filtering operations on trimeshes
 #include "TriMesh_algo.h"
 #include "lineqn.h"
 #include <numeric>
+
 using namespace std;
-
-
-// Quick 'n dirty portable random number generator 
-static inline float tinyrnd()
-{
-	static unsigned trand = 0;
-	trand = 1664525u * trand + 1013904223u;
-	return (float) trand / 4294967296.0f;
-}
-
 
 // Create an offset surface from a mesh.  Dumb - just moves along the
 // normal by the given distance, making no attempt to avoid self-intersection.
@@ -477,15 +468,14 @@ void noisify(TriMesh *mesh, float amount)
 		for (int j = 0; j < mesh->neighbors[i].size(); j++) {
 			const point &n = mesh->vertices[mesh->neighbors[i][j]];
 			float scale = amount / (amount + len(n-v));
-			disp[i] += (float) tinyrnd() * scale * (n-v);
+            disp[i] += (float) drand48() * scale * (n-v);
 		}
 		if (mesh->neighbors[i].size())
 			disp[i] /= (float) mesh->neighbors[i].size();
 		// Normal
-		disp[i] += (2.0f * (float) tinyrnd() - 1.0f) *
+        disp[i] += (2.0f * (float) drand48() - 1.0f) *
 			   amount * mesh->normals[i];
 	}
 	for (int i = 0; i < nv; i++)
 		mesh->vertices[i] += disp[i];
 }
-

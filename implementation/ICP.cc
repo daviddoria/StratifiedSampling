@@ -28,15 +28,6 @@ Routines for doing ICP.
 #define USE_GRID_FOR_OVERLAPS
 #undef USE_KD_FOR_OVERLAPS
 
-// Quick 'n dirty portable random number generator 
-static inline float tinyrnd()
-{
-	static unsigned trand = 0;
-	trand = 1664525u * trand + 1013904223u;
-	return (float) trand / 4294967296.0f;
-}
-
-
 // A pair of points, with an associated normal
 struct PtPair {
 	point p1, p2;
@@ -241,7 +232,7 @@ static void select_and_match(TriMesh *s1, TriMesh *s2,
 	float cval = 0.0f;
 	while (1) 
     {
-		cval += incr * tinyrnd();
+        cval += incr * drand48();
 		if (cval >= 1.0f)
         {
 			break;
